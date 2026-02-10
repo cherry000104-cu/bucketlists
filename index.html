@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마우스 오버 컬러 비디오 갤러리</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+
+    .video-gallery {
+        display: grid;
+        /* 핵심 수정: 한 줄에 무조건 5개씩 (최소 150px 유지하며) */
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 15px; /* 간격을 살짝 좁혔어요 */
+        max-width: 1400px; /* 5개가 들어가므로 전체 폭을 조금 넓혔습니다 */
+        width: 100%;
+    }
+
+    .video-container {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #000;
+        aspect-ratio: 9 / 16; /* 쇼츠 비율 유지 */
+        width: 100%;
+    }
+
+/* 모바일에서는 5개가 너무 작으므로 2개씩 보이게 조절 */
+    @media (max-width: 768px) {
+        .video-gallery {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+.video-container iframe {
+    width: 100%;
+    height: 100%; /* 부모 컨테이너에 꽉 차게 */
+    border: none;
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+.video-container:hover iframe {
+    filter: grayscale(0%);
+}
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(100%); /* 기본적으로 흑백 */
+            transition: filter 0.5s ease; /* 흑백->컬러 전환 애니메이션 */
+            cursor: pointer;
+        }
+
+        .video-container:hover video {
+            filter: grayscale(0%); /* 마우스 오버 시 컬러 */
+        }
+
+        .video-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            padding: 15px 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-container:hover .video-title {
+            opacity: 1;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .video-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>당신의 버킷리스트는 무엇인가요?</h1>
+
+    <div class="video-gallery" id="videoGallery">
+        </div>
+
+   <script>
+    const videos = [
+        { id: "JkFTVoqZpRo", title: "짜릿한 스피드" },
+        { id: "OKiU0HFeD-s", title: "헬기스키" },
+        { id: "lFOQjrpvtgs", title: "사파리" },
+{ id: "-Yq3v9Kn33E", title: "운하통과"},
+{ id: "XdWeCOiUmtM", title: "작가후원"},
+{ id: "eZWvKOuZnq0", title: "개인공연"},
+{ id: "DcAdqPJzqDA", title: "개인갤러리"},
+{ id: "Hb6AH0lA1zQ", title: "학교설립"},
+{ id: "g37su0g5500", title: "장학금"},
+{ id: "TtvaXUI7wkI", title: "경영권승계"},
+ 
+    ];
+
+    const videoGallery = document.getElementById('videoGallery');
+
+    videos.forEach(videoData => {
+        const videoContainer = document.createElement('div');
+        videoContainer.className = 'video-container';
+
+        const iframe = document.createElement('iframe');
+        
+        // 오류 해결 핵심: origin 설정을 위해 현재 도메인 정보를 추가합니다.
+        const currentOrigin = window.location.origin === 'null' ? '' : window.location.origin;
+        
+        // 유튜브 쇼츠를 위한 최적화된 임베드 주소
+        iframe.src = `https://www.youtube.com/embed/${videoData.id}?autoplay=1&mute=1&loop=1&playlist=${videoData.id}&controls=0&modestbranding=1&rel=0&enablejsapi=1&origin=${currentOrigin}`;
+        
+        iframe.style.width = "100%";
+        iframe.style.height = "100%"; // CSS에서 비율을 잡아주므로 100%로 설정
+        iframe.style.border = "none";
+        
+        // 중요: 권한 정책 명시
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        iframe.setAttribute('allowfullscreen', 'true');
+
+        const videoTitle = document.createElement('div');
+        videoTitle.className = 'video-title';
+        videoTitle.textContent = videoData.title;
+
+        videoContainer.appendChild(iframe);
+        videoContainer.appendChild(videoTitle);
+        videoGallery.appendChild(videoContainer);
+    });
+</script>
+</body>
+</html>
