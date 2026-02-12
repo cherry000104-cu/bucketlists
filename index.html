@@ -143,7 +143,7 @@
  
     ];
 
-    const videoGallery = document.getElementById('videoGallery');
+   const videoGallery = document.getElementById('videoGallery');
 
     videos.forEach(videoData => {
         const videoContainer = document.createElement('div');
@@ -151,19 +151,17 @@
 
         const iframe = document.createElement('iframe');
         
-        // 오류 해결 핵심: origin 설정을 위해 현재 도메인 정보를 추가합니다.
-        const currentOrigin = window.location.origin === 'null' ? '' : window.location.origin;
-        
-        // 유튜브 쇼츠를 위한 최적화된 임베드 주소
-        iframe.src = `https://www.youtube.com/embed/${videoData.id}?autoplay=1&mute=1&loop=1&playlist=${videoData.id}&controls=0&modestbranding=1&rel=0&enablejsapi=1&origin=${currentOrigin}`;
+        // 최적화 포인트: loading=lazy 추가, 무거운 기능(JS API 등) 최소화
+        // iv_load_policy=3은 비디오 어노테이션을 꺼서 로딩을 줄입니다.
+        iframe.src = `https://www.youtube.com/embed/${videoData.id}?autoplay=1&mute=1&loop=1&playlist=${videoData.id}&controls=0&modestbranding=1&iv_load_policy=3&rel=0`;
         
         iframe.style.width = "100%";
-        iframe.style.height = "100%"; // CSS에서 비율을 잡아주므로 100%로 설정
+        iframe.style.height = "100%";
         iframe.style.border = "none";
         
-        // 중요: 권한 정책 명시
-        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-        iframe.setAttribute('allowfullscreen', 'true');
+        // 핵심: 지연 로딩 속성 추가
+        iframe.setAttribute('loading', 'lazy'); 
+        iframe.setAttribute('allow', 'autoplay; encrypted-media');
 
         const videoTitle = document.createElement('div');
         videoTitle.className = 'video-title';
