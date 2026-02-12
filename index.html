@@ -90,11 +90,25 @@
             opacity: 1;
         }
 
-        /* 반응형 디자인 */
-        @media (max-width: 768px) {
-            .video-gallery {
-                grid-template-columns: 1fr;
-            }
+    /* 모바일용 스타일 수정: 화면 너비가 768px 이하일 때 적용 */
+    @media (max-width: 768px) {
+        .video-gallery {
+            /* 한 줄에 3개씩 배치 */
+            grid-template-columns: repeat(3, 1fr);
+            /* 모바일에서는 간격이 너무 넓으면 영상이 작아지므로 간격을 살짝 조절 */
+            gap: 8px; 
+        }
+
+        .video-title {
+            /* 모바일에서는 제목 글씨 크기를 더 줄여서 영상이 잘 보이게 함 */
+            font-size: 0.7em;
+            padding: 8px 5px;
+        }
+
+        h1 {
+            /* 모바일에서 제목 크기 조절 */
+            font-size: 1.5rem;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -122,6 +136,10 @@
 { id: "BoQq4P_Rx-g", title: "극지탐험"},
 { id: "byN0MuBGLi0", title: "프라이빗 아일랜드"},
 { id: "q-CkgB5XObg", title: "F1"},
+{ id: "kQKEnn2oalA", title: "소믈리에"},
+{ id: "WZ4OG-nbL64", title: "가문파티"},
+{ id: "2szdNrBqeMI", title: "바디화보"},
+{ id: "X6a0Q85u2QU", title: "학위수여"},
  
     ];
 
