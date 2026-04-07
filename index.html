@@ -134,19 +134,71 @@
 <script>
     // 98개 데이터 매트릭스 로직 (샘플 데이터 주입)
     const db = {
-        "Physical": {
-            "Purpose": { "Light": "손자녀와 함께하는 1박 2일 자연 액티비티", "Challenge": "소노 승마클럽 마스터 과정 완주" },
-            "Energy": { "Light": "생전 처음 해보는 액티비티 3가지 완수", "Challenge": "산악 자전거(MTB) 대회 공식 완주" },
-            "Goal": { "Light": "10km 로드 마라톤 공식 완주", "Challenge": "철인 3종 경기 공식 완주" }
-            // ... (나머지 98개 데이터를 이 형식으로 채우면 됩니다)
-        },
-        "Intellectual": {
-            "Legacy": { "Light": "나의 인생 교훈 에세이 자비 출판", "Challenge": "나의 철학을 담은 자서전 정식 출간" },
-            "Goal": { "Light": "관심 분야 책 12권 완독 독서 챌린지", "Challenge": "전문 분야 석·박사 학위 취득" }
-        }
-        // 이 데이터 구조에 98개를 다 꽂으면 100% 작동합니다.
-    };
-
+    "Physical": {
+        "Purpose": { "Light": "손자녀와 함께하는 1박 2일 자연 액티비티", "Challenge": "소노 승마클럽 마스터 과정 완주" },
+        "Legacy": { "Light": "가족 건강 레시피북 완성", "Challenge": "가문 건강 비법 체계화 + 공식 기록 완성" },
+        "Union": { "Light": "부부 공동 건강 목표 설정 + 6개월 실천", "Challenge": "부부 함께 댄스스포츠 대회 입상" },
+        "Goal": { "Light": "10km 로드 마라톤 공식 완주", "Challenge": "철인 3종 경기 공식 완주" },
+        "Autonomy": { "Light": "나만의 아침 건강 루틴 90일 완성", "Challenge": "스쿠버다이빙 국제 자격증 취득 + 해외 다이빙" },
+        "Growth": { "Light": "코리아둘레길 코스 5개 이상 완주", "Challenge": "1년간 체계적 역노화 프로그램 완성" },
+        "Energy": { "Light": "생전 처음 해보는 액티비티 3가지 완수", "Challenge": "산악 자전거 (MTB) 대회 공식 완주" }
+    },
+    "Relational": {
+        "Purpose": { "Light": "소원했던 은인 10명 찾아가 감사 식사", "Challenge": "세계적 명사 교류 클럽 의장 활동" },
+        "Legacy": { "Light": "가계도·가족사 영상 다큐 완성 (셀프)", "Challenge": "가문 헌장 + 디지털 아카이브 구축" },
+        "Union": { "Light": "손자녀 관심사 함께 배우기 (3가지)", "Challenge": "3대 가족 공동 뮤지컬 무대 공연" },
+        "Goal": { "Light": "가족 공동 버킷리스트 달성 선포식 개최", "Challenge": "가업 승계 공식 선포식 완료" },
+        "Autonomy": { "Light": "나만의 테마 소셜 살롱 정기 운영 (6회)", "Challenge": "50주년 결혼기념 리마인드 웨딩 직접 기획" },
+        "Growth": { "Light": "부모님·자녀와 깊은 대화 시리즈 10회", "Challenge": "가족 모두 함께 골프 입문 + 공식 라운딩 완주" },
+        "Energy": { "Light": "친구들과 연 1회 테마 여행 전통 만들기", "Challenge": "50년 우정 친구들과 공동 회고록 출판" }
+    },
+    "Experiential": {
+        "Purpose": { "Light": "국내 역사 유적지 순례 10곳 완주", "Challenge": "민간 우주 비행 체험 완수" },
+        "Legacy": { "Light": "나만의 여행 에세이 자비 출판", "Challenge": "가문 대대로 이어갈 해외 성지 순례 개척" },
+        "Union": { "Light": "3대 가족 해외 여행 연례 전통 실행", "Challenge": "3대 가족 해외 오지 탐험 완주" },
+        "Goal": { "Light": "국내 섬 10곳 여행 완주", "Challenge": "국내/해외 트레일러닝 대회 공식 완주" },
+        "Autonomy": { "Light": "나홀로 제주도 한 달 살기 완료", "Challenge": "요트 세일링 자격증 취득 + 단독 항해" },
+        "Growth": { "Light": "영어·일어 등 제2외국어 중급 회화 마스터", "Challenge": "오토바이 세계 일주" },
+        "Energy": { "Light": "한 번도 안 가본 해외 도시 3곳 탐험", "Challenge": "히말라야 베이스캠프 트레킹 완주" }
+    },
+    "Creative": {
+        "Purpose": { "Light": "직접 만든 공예품으로 가족 선물 세트 완성", "Challenge": "나만의 요리 브랜드 + 요리책 출판" },
+        "Legacy": { "Light": "부부 여행기 독립 출판물 제작", "Challenge": "내 이름의 미술관 영구 컬렉션 기증 + 헌정" },
+        "Union": { "Light": "가족 모두가 참여하는 공동 포토북 제작", "Challenge": "가족 모두가 참여하는 가문 역사 다큐 제작" },
+        "Goal": { "Light": "원데이 아트클래스 수료 + 작품 전시", "Challenge": "개인 미술 작품 갤러리 전시회 개최" },
+        "Autonomy": { "Light": "나만의 플레이리스트 큐레이션 및 공유", "Challenge": "나만의 취향이 담긴 프라이빗 LP바/공간 구축" },
+        "Growth": { "Light": "악기 하나 마스터하여 지인 앞 연주", "Challenge": "전문 예술 교육 과정 수료 및 작가 데뷔" },
+        "Energy": { "Light": "매일 하나의 영감을 기록하는 드로잉 챌린지", "Challenge": "가문 로고 및 시그니처 문장(紋章) 디자인" }
+    },
+    "Intellectual": {
+        "Purpose": { "Light": "내 전문 분야 후배 멘토링 10회 완료", "Challenge": "AI·IT 기술 마스터 후 시니어 강사 활동" },
+        "Legacy": { "Light": "나의 인생 교훈 에세이 자비 출판", "Challenge": "나의 철학·인생을 담은 자서전 정식 출간" },
+        "Union": { "Light": "부부·가족 인문학 독서 모임 정기 운영", "Challenge": "인문학 크루 참여 + 공동 성과 발표회" },
+        "Goal": { "Light": "관심 분야 책 12권 완독 독서 챌린지", "Challenge": "전문 분야 석·박사 학위 취득" },
+        "Autonomy": { "Light": "매달 한 번 새로운 강연 참여 후 기록", "Challenge": "제2외국어로 현지 한 달 살기 (통번역기 없이)" },
+        "Growth": { "Light": "매일 뉴스레터 탐독 및 시사 브리핑 작성", "Challenge": "고급 인문학/철학 과정 1년 수료 및 논문 작성" },
+        "Energy": { "Light": "새로운 디지털 툴(앱) 10개 마스터하기", "Challenge": "글로벌 지식 컨퍼런스 참여 및 영문 참관기 발표" }
+    },
+    "Social": {
+        "Purpose": { "Light": "인문학 강연 기획 + 공개 강연 데뷔", "Challenge": "글로벌 평화·환경 민간 대사 활동" },
+        "Legacy": { "Light": "내 이름으로 지역 도서관 정기 도서 기증", "Challenge": "글로벌 '100개 학교' 건립 프로젝트" },
+        "Union": { "Light": "입주민과 함께하는 자선 바자회 기획", "Challenge": "지역 소외계층 자립 지원 연대 구성" },
+        "Goal": { "Light": "지역 자원봉사 연간 50시간 달성", "Challenge": "지역 사회 랜드마크 문화 공간 기부" },
+        "Autonomy": { "Light": "나만의 소규모 재능 나눔 클래스 운영", "Challenge": "사회 문제 해결을 위한 공익 재단 설립 운영" },
+        "Growth": { "Light": "비영리 단체 자문 위원 참여 및 활동", "Challenge": "사회적 기업 창업 및 비즈니스 모델 구축" },
+        "Energy": { "Light": "지역 캠페인 참여 및 SNS 홍보 대사 활동", "Challenge": "사회적 이슈 해결을 위한 포럼 개최 및 주도" }
+    },
+    "Economic": {
+        "Purpose": { "Light": "사회적 기업 소액 임팩트 투자 첫 경험", "Challenge": "가문 공익 재단 설립 완료" },
+        "Legacy": { "Light": "손자녀 미래를 위한 교육 신탁 펀드 설정", "Challenge": "100년 가업 승계 리더십 매뉴얼 완성" },
+        "Union": { "Light": "자녀와 가족 재정 대화 + 공동 소액 투자", "Challenge": "가족 공동 투자 펀드 운영 + 교육 시스템" },
+        "Goal": { "Light": "나만의 배당 포트폴리오 완성 (소액)", "Challenge": "임팩트 투자로 소셜 벤처 유니콘 육성" },
+        "Autonomy": { "Light": "금융 자격증/공부 후 직접 자산 운용", "Challenge": "단독 패밀리 오피스(SFO) 구축·운영" },
+        "Growth": { "Light": "경제 트렌드 공부 및 월간 자산 리포트 작성", "Challenge": "엔젤 투자자 활동 및 스타트업 멘토링" },
+        "Energy": { "Light": "부동산/주식 외 새로운 투자 자산 탐색", "Challenge": "가족 법인 설립을 통한 자산 구조 효율화" }
+    }
+};
+    
     let selections = { domain: '', value: '', style: '' };
 
     function selectStep(step, value) {
