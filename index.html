@@ -9,10 +9,18 @@
         :root {
             --bg-color: #f8f7f4; --point-color: #1a2a40; --accent-color: #c5a36b; --text-color: #333;
         }
+        html { scroll-behavior: smooth; } /* 부드러운 스크롤의 핵심 */
         body { margin: 0; background-color: var(--bg-color); font-family: 'Noto Serif KR', serif; color: var(--text-color); line-height: 1.6; }
-        .wrapper { max-width: 800px; margin: 0 auto; padding: 80px 20px; min-height: 100vh; }
-        .step-container { display: none; opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
-        .step-container.active { display: block; opacity: 1; transform: translateY(0); }
+        
+        .wrapper { max-width: 800px; margin: 0 auto; padding: 40px 20px 200px 20px; }
+        
+        /* 섹션 공통 스타일 */
+        section { 
+            padding: 100px 0; border-bottom: 1px solid #eee; 
+            opacity: 0.3; transition: opacity 0.8s ease;
+        }
+        section.active { opacity: 1; }
+        section:last-of-type { border-bottom: none; }
 
         h2 { font-size: 1.8rem; font-weight: 500; margin-bottom: 40px; color: var(--point-color); word-break: keep-all; }
         .progress { font-size: 0.8rem; color: var(--accent-color); letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
@@ -22,104 +30,106 @@
         .choice-card {
             background: #fff; border: 1px solid #e0e0e0; padding: 25px 10px; cursor: pointer; text-align: center; transition: 0.3s;
         }
-        .choice-card:hover { border-color: var(--accent-color); background: #fdfaf5; }
+        .choice-card.selected { border-color: var(--accent-color); background: #fdfaf5; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
         .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .style-card { background: #fff; border: 1px solid #e0e0e0; padding: 40px 20px; cursor: pointer; text-align: center; transition: 0.3s; }
+        .style-card.selected { border-color: var(--accent-color); background: #fdfaf5; }
         .style-card img { width: 60px; margin-bottom: 15px; opacity: 0.6; }
 
         /* 결과 박스 (수정 가능) */
-        .result-box { background: #fff; border: 1px solid var(--accent-color); padding: 40px; margin-top: 20px; position: relative; }
+        .result-box { background: #fff; border: 2px solid var(--accent-color); padding: 50px 40px; margin-top: 20px; position: relative; }
         .edit-hint { font-size: 0.7rem; color: var(--accent-color); position: absolute; top: 15px; right: 20px; }
         .result-title { 
-            font-size: 1.5rem; margin-bottom: 15px; color: var(--point-color); outline: none; border-bottom: 1px dashed #ccc; padding-bottom: 5px;
+            font-size: 1.6rem; margin-bottom: 20px; color: var(--point-color); outline: none; border-bottom: 1px dashed #ccc; padding-bottom: 5px;
         }
         .btn-add { 
-            background: var(--accent-color); color: #fff; border: none; padding: 10px 25px; cursor: pointer; font-family: inherit; margin-top: 10px;
+            background: var(--accent-color); color: #fff; border: none; padding: 12px 30px; cursor: pointer; font-family: inherit; font-size: 1rem;
         }
 
-        /* 내 컬렉션 하단 바 */
-        .collection-area { margin-top: 60px; border-top: 2px solid var(--point-color); padding-top: 30px; }
+        /* 하단 고정 컬렉션 바 (선택 사항) 또는 하단 영역 */
+        .collection-area { margin-top: 100px; border-top: 3px solid var(--point-color); padding-top: 50px; }
         .collection-list { list-style: none; padding: 0; margin-bottom: 30px; }
         .collection-item { 
-            display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px 20px; margin-bottom: 8px; border: 1px solid #eee; font-size: 0.95rem;
+            display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 25px; margin-bottom: 10px; border: 1px solid #eee;
         }
-        .btn-remove { background: none; border: none; color: #999; cursor: pointer; font-size: 0.8rem; }
+        .btn-remove { background: none; border: none; color: #999; cursor: pointer; }
 
-        /* 이메일 섹션 */
-        .email-box { background: #eee; padding: 30px; display: flex; gap: 10px; align-items: center; }
-        input[type="email"] { flex: 1; padding: 12px; border: 1px solid #ccc; font-family: inherit; }
-        .btn-send { background: var(--point-color); color: #fff; border: none; padding: 12px 30px; cursor: pointer; font-family: inherit; }
+        .email-box { background: #eee; padding: 40px; display: flex; gap: 15px; align-items: center; margin-top: 30px; }
+        input[type="email"] { flex: 1; padding: 15px; border: 1px solid #ccc; font-family: inherit; }
+        .btn-send { background: var(--point-color); color: #fff; border: none; padding: 15px 40px; cursor: pointer; font-family: inherit; }
+
+        .restart-link { 
+            display: inline-block; margin-top: 40px; color: var(--accent-color); text-decoration: none; border-bottom: 1px solid var(--accent-color); cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
-    <div id="step1" class="step-container active">
+    <section id="step1" class="active">
         <div class="progress">Step 01. Territory</div>
         <h2>일상을 깨우는 첫 번째 물결,<br>어떤 영역에서 시작하고 싶으신가요?</h2>
-        <div class="card-grid">
-            <div class="choice-card" onclick="selectStep(1, 'Physical')">신체·생존</div>
-            <div class="choice-card" onclick="selectStep(1, 'Relational')">관계·공동체</div>
-            <div class="choice-card" onclick="selectStep(1, 'Experiential')">탐험·경험</div>
-            <div class="choice-card" onclick="selectStep(1, 'Creative')">창작·표현</div>
-            <div class="choice-card" onclick="selectStep(1, 'Intellectual')">지적·학습</div>
-            <div class="choice-card" onclick="selectStep(1, 'Social')">사회·공공</div>
-            <div class="choice-card" onclick="selectStep(1, 'Economic')">자산·사업</div>
+        <div class="card-grid" id="grid1">
+            <div class="choice-card" onclick="selectStep(1, 'Physical', this)">신체·생존</div>
+            <div class="choice-card" onclick="selectStep(1, 'Relational', this)">관계·공동체</div>
+            <div class="choice-card" onclick="selectStep(1, 'Experiential', this)">탐험·경험</div>
+            <div class="choice-card" onclick="selectStep(1, 'Creative', this)">창작·표현</div>
+            <div class="choice-card" onclick="selectStep(1, 'Intellectual', this)">지적·학습</div>
+            <div class="choice-card" onclick="selectStep(1, 'Social', this)">사회·공공</div>
+            <div class="choice-card" onclick="selectStep(1, 'Economic', this)">자산·사업</div>
         </div>
-    </div>
+    </section>
 
-    <div id="step2" class="step-container">
+    <section id="step2" style="display:none;">
         <div class="progress">Step 02. Value</div>
         <h2>그 파동이 머물고 간 자리에,<br>어떤 가슴 벅찬 흔적을 남기고 싶나요?</h2>
-        <div class="card-grid">
-            <div class="choice-card" onclick="selectStep(2, 'Purpose')">의미</div>
-            <div class="choice-card" onclick="selectStep(2, 'Legacy')">유산</div>
-            <div class="choice-card" onclick="selectStep(2, 'Union')">연결</div>
-            <div class="choice-card" onclick="selectStep(2, 'Goal')">성취</div>
-            <div class="choice-card" onclick="selectStep(2, 'Autonomy')">자율</div>
-            <div class="choice-card" onclick="selectStep(2, 'Growth')">성장</div>
-            <div class="choice-card" onclick="selectStep(2, 'Energy')">생동</div>
+        <div class="card-grid" id="grid2">
+            <div class="choice-card" onclick="selectStep(2, 'Purpose', this)">의미</div>
+            <div class="choice-card" onclick="selectStep(2, 'Legacy', this)">유산</div>
+            <div class="choice-card" onclick="selectStep(2, 'Union', this)">연결</div>
+            <div class="choice-card" onclick="selectStep(2, 'Goal', this)">성취</div>
+            <div class="choice-card" onclick="selectStep(2, 'Autonomy', this)">자율</div>
+            <div class="choice-card" onclick="selectStep(2, 'Growth', this)">성장</div>
+            <div class="choice-card" onclick="selectStep(2, 'Energy', this)">생동</div>
         </div>
-    </div>
+    </section>
 
-    <div id="step3" class="step-container">
+    <section id="step3" style="display:none;">
         <div class="progress">Step 03. Style</div>
         <h2>당신은 그 파동을 어떤 방식으로 맞이하시겠습니까?</h2>
-        <div class="dual-grid">
-            <div class="style-card" onclick="selectStep(3, 'Light')">
+        <div class="dual-grid" id="grid3">
+            <div class="style-card" onclick="selectStep(3, 'Light', this)">
                 <img src="https://cdn-icons-png.flaticon.com/512/2822/2822359.png" alt="Canoe"><br>
                 <strong>잔잔한 물결 위 카누</strong>
             </div>
-            <div class="style-card" onclick="selectStep(3, 'Challenge')">
+            <div class="style-card" onclick="selectStep(3, 'Challenge', this)">
                 <img src="https://cdn-icons-png.flaticon.com/512/2664/2664531.png" alt="Surfing"><br>
                 <strong>높은 파도 위 서핑</strong>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="resultArea" class="step-container">
-        <div class="progress">Your Wave Discovery</div>
-        <h2>당신만을 위해 발견된 파동입니다.</h2>
-        
+    <section id="resultArea" style="display:none;">
+        <div class="progress">Discovery Result</div>
+        <h2>당신을 위해 발견된 파동의 문장입니다.</h2>
         <div class="result-box">
-            <div class="edit-hint">✎ 클릭하여 문구를 수정할 수 있습니다</div>
+            <div class="edit-hint">✎ 문구를 직접 수정하여 나만의 파동으로 만들어보세요</div>
             <div id="resTitle" class="result-title" contenteditable="true">버킷리스트 명칭</div>
-            <button class="btn-add" onclick="addToCollection()">이 문장 담기 +</button>
+            <button class="btn-add" onclick="addToCollection()">이 문장 나의 컬렉션에 담기 +</button>
         </div>
+        <div class="restart-link" onclick="restartDiscovery()">← 다른 파동 다시 찾아보기</div>
+    </section>
 
-        <div class="collection-area">
-            <h3>나의 마스터피스 컬렉션 (<span id="collCount">0</span>/10)</h3>
-            <ul id="collList" class="collection-list">
-                </ul>
+    <div class="collection-area" id="finalCollection">
+        <h3>나의 마스터피스 컬렉션 (<span id="collCount">0</span>/10)</h3>
+        <ul id="collList" class="collection-list">
+            <p style="color:#aaa; font-style:italic;">아직 담긴 파동이 없습니다. 탐색을 통해 컬렉션을 채워보세요.</p>
+        </ul>
 
-            <div id="emailSection" class="email-box" style="display:none;">
-                <input type="email" id="userEmail" placeholder="리포트를 받을 이메일 주소">
-                <button class="btn-send" onclick="sendFinalEmail()">Email Me</button>
-            </div>
-            
-            <p style="text-align:center; margin-top:40px;">
-                <a href="#" onclick="location.reload()" style="color:var(--accent-color); text-decoration:none;">← 다른 파동 찾아보기</a>
-            </p>
+        <div id="emailSection" class="email-box" style="display:none;">
+            <input type="email" id="userEmail" placeholder="리포트를 받을 이메일 주소">
+            <button class="btn-send" onclick="sendFinalEmail()">Email Me</button>
         </div>
     </div>
 </div>
@@ -194,47 +204,55 @@
     let selections = { domain: '', value: '', style: '' };
     let collectedItems = [];
 
-    function selectStep(step, val) {
-        if (step === 1) selections.domain = val;
-        if (step === 2) selections.value = val;
-        if (step === 3) {
+    function selectStep(step, val, el) {
+        // 선택 시각화
+        const parent = el.parentElement;
+        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+        el.classList.add('selected');
+
+        if (step === 1) {
+            selections.domain = val;
+            showNextSection('step2');
+        } else if (step === 2) {
+            selections.value = val;
+            showNextSection('step3');
+        } else if (step === 3) {
             selections.style = val;
             showDiscovery();
-            return;
         }
-        document.getElementById(`step${step}`).classList.remove('active');
+    }
+
+    function showNextSection(id) {
+        const nextSec = document.getElementById(id);
+        nextSec.style.display = 'block';
         setTimeout(() => {
-            document.getElementById(`step${step}`).style.display = 'none';
-            const next = document.getElementById(`step${step+1}`);
-            next.style.display = 'block';
-            setTimeout(() => next.classList.add('active'), 50);
-        }, 400);
+            nextSec.classList.add('active');
+            nextSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
     }
 
     function showDiscovery() {
         const title = db[selections.domain][selections.value][selections.style];
         document.getElementById('resTitle').innerText = title;
-        document.getElementById('step3').classList.remove('active');
+        
+        const resultSec = document.getElementById('resultArea');
+        resultSec.style.display = 'block';
         setTimeout(() => {
-            document.getElementById('step3').style.display = 'none';
-            const area = document.getElementById('resultArea');
-            area.style.display = 'block';
-            setTimeout(() => area.classList.add('active'), 50);
-        }, 400);
+            resultSec.classList.add('active');
+            resultSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
     }
 
     function addToCollection() {
         const text = document.getElementById('resTitle').innerText.trim();
-        if (collectedItems.length >= 10) {
-            alert("컬렉션은 최대 10개까지 가능합니다.");
-            return;
-        }
-        if (collectedItems.includes(text)) {
-            alert("이미 컬렉션에 담긴 문장입니다.");
-            return;
-        }
+        if (collectedItems.length >= 10) { alert("컬렉션은 최대 10개까지 가능합니다."); return; }
+        if (collectedItems.includes(text)) { alert("이미 컬렉션에 담긴 문장입니다."); return; }
+        
         collectedItems.push(text);
         renderCollection();
+        
+        // 담은 후 컬렉션 영역으로 이동
+        document.getElementById('finalCollection').scrollIntoView({ behavior: 'smooth' });
     }
 
     function renderCollection() {
@@ -242,13 +260,17 @@
         const count = document.getElementById('collCount');
         const emailSec = document.getElementById('emailSection');
         
-        list.innerHTML = '';
-        collectedItems.forEach((item, index) => {
-            const li = document.createElement('li');
-            li.className = 'collection-item';
-            li.innerHTML = `<span>${index + 1}. ${item}</span> <button class="btn-remove" onclick="removeItem(${index})">삭제</button>`;
-            list.appendChild(li);
-        });
+        if (collectedItems.length === 0) {
+            list.innerHTML = '<p style="color:#aaa; font-style:italic;">아직 담긴 파동이 없습니다.</p>';
+        } else {
+            list.innerHTML = '';
+            collectedItems.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'collection-item';
+                li.innerHTML = `<span>${index + 1}. ${item}</span> <button class="btn-remove" onclick="removeItem(${index})">삭제</button>`;
+                list.appendChild(li);
+            });
+        }
 
         count.innerText = collectedItems.length;
         emailSec.style.display = collectedItems.length > 0 ? 'flex' : 'none';
@@ -259,13 +281,29 @@
         renderCollection();
     }
 
+    function restartDiscovery() {
+        // 기존 선택값 및 UI 초기화 (컬렉션은 유지)
+        selections = { domain: '', value: '', style: '' };
+        
+        // Step 2, 3, Result 숨기기
+        ['step2', 'step3', 'resultArea'].forEach(id => {
+            const sec = document.getElementById(id);
+            sec.classList.remove('active');
+            sec.style.display = 'none';
+        });
+
+        // 카드 선택 표시 초기화
+        document.querySelectorAll('.choice-card, .style-card').forEach(card => card.classList.remove('selected'));
+
+        // 맨 위로 부드럽게 이동
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function sendFinalEmail() {
         const email = document.getElementById('userEmail').value;
         if (!email) { alert("이메일을 입력해주세요."); return; }
-        
-        const content = collectedItems.join('\n');
-        alert(`${email}님께 아래 10개의 파동 리포트가 발송되었습니다.\n\n[나의 컬렉션]\n${content}`);
-        // 실제 전송 로직(Formspree 등)은 여기에 연결
+        const content = collectedItems.map((item, i) => `${i+1}. ${item}`).join('\n');
+        alert(`${email}님께 아래 컬렉션 리포트가 발송되었습니다.\n\n${content}`);
     }
 </script>
 </body>
