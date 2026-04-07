@@ -7,240 +7,266 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f8f7f4; 
-            --point-color: #1a2a40; 
-            --accent-color: #c5a36b;
-            --text-color: #333;
+            --bg-color: #f8f7f4; --point-color: #1a2a40; --accent-color: #c5a36b; --text-color: #333;
         }
-
-        body {
-            margin: 0; background-color: var(--bg-color);
-            font-family: 'Noto Serif KR', serif; color: var(--text-color);
-            line-height: 1.6; overflow-x: hidden;
-        }
-
-        /* 디지털 양장본 느낌의 여백과 애니메이션 */
-        .wrapper { max-width: 800px; margin: 0 auto; padding: 100px 20px; min-height: 80vh; }
-        .step-container { display: none; opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        body { margin: 0; background-color: var(--bg-color); font-family: 'Noto Serif KR', serif; color: var(--text-color); line-height: 1.6; }
+        .wrapper { max-width: 800px; margin: 0 auto; padding: 80px 20px; min-height: 100vh; }
+        .step-container { display: none; opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
         .step-container.active { display: block; opacity: 1; transform: translateY(0); }
 
-        h2 { font-size: 2rem; font-weight: 500; margin-bottom: 40px; color: var(--point-color); word-break: keep-all; }
-        .sub-text { font-size: 1.1rem; color: #777; margin-bottom: 50px; }
+        h2 { font-size: 1.8rem; font-weight: 500; margin-bottom: 40px; color: var(--point-color); word-break: keep-all; }
+        .progress { font-size: 0.8rem; color: var(--accent-color); letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
 
         /* 카드 레이아웃 */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
         .choice-card {
-            background: #fff; border: 1px solid #e0e0e0; padding: 30px 15px; cursor: pointer;
-            transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #fff; border: 1px solid #e0e0e0; padding: 25px 10px; cursor: pointer; text-align: center; transition: 0.3s;
         }
         .choice-card:hover { border-color: var(--accent-color); background: #fdfaf5; }
-        .choice-card i { font-size: 1.5rem; margin-bottom: 15px; display: block; }
-        .choice-card span { font-weight: 500; }
+        .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .style-card { background: #fff; border: 1px solid #e0e0e0; padding: 40px 20px; cursor: pointer; text-align: center; transition: 0.3s; }
+        .style-card img { width: 60px; margin-bottom: 15px; opacity: 0.6; }
 
-        /* 단계 3 특화 레이아웃 (2개 카드) */
-        .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .style-card {
-            background: #fff; border: 1px solid #e0e0e0; padding: 50px 20px; cursor: pointer; transition: all 0.3s;
+        /* 결과 박스 (수정 가능) */
+        .result-box { background: #fff; border: 1px solid var(--accent-color); padding: 40px; margin-top: 20px; position: relative; }
+        .edit-hint { font-size: 0.7rem; color: var(--accent-color); position: absolute; top: 15px; right: 20px; }
+        .result-title { 
+            font-size: 1.5rem; margin-bottom: 15px; color: var(--point-color); outline: none; border-bottom: 1px dashed #ccc; padding-bottom: 5px;
         }
-        .style-card img { width: 100px; margin-bottom: 20px; opacity: 0.7; }
-        .style-card:hover { border-color: var(--accent-color); }
-        .style-card h3 { margin: 10px 0; font-size: 1.3rem; }
+        .btn-add { 
+            background: var(--accent-color); color: #fff; border: none; padding: 10px 25px; cursor: pointer; font-family: inherit; margin-top: 10px;
+        }
 
-        /* 결과 화면 */
-        .result-box { background: #fff; border: 1px solid var(--accent-color); padding: 60px 40px; margin-top: 30px; }
-        .result-tag { color: var(--accent-color); font-size: 0.9rem; margin-bottom: 10px; display: block; }
-        .result-title { font-size: 1.8rem; margin-bottom: 20px; color: var(--point-color); }
-        
-        /* Email Me 섹션 */
-        .email-section { margin-top: 50px; border-top: 1px solid #eee; padding-top: 40px; }
-        input[type="email"] { 
-            padding: 15px; width: 60%; border: 1px solid #ddd; font-family: inherit; margin-right: 10px;
+        /* 내 컬렉션 하단 바 */
+        .collection-area { margin-top: 60px; border-top: 2px solid var(--point-color); padding-top: 30px; }
+        .collection-list { list-style: none; padding: 0; margin-bottom: 30px; }
+        .collection-item { 
+            display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px 20px; margin-bottom: 8px; border: 1px solid #eee; font-size: 0.95rem;
         }
-        .btn-email { 
-            background: var(--point-color); color: #fff; border: none; padding: 15px 40px; 
-            cursor: pointer; font-family: inherit; transition: 0.3s;
-        }
-        .btn-email:hover { background: var(--accent-color); }
+        .btn-remove { background: none; border: none; color: #999; cursor: pointer; font-size: 0.8rem; }
 
-        .progress { font-size: 0.9rem; color: var(--accent-color); letter-spacing: 2px; margin-bottom: 10px; }
+        /* 이메일 섹션 */
+        .email-box { background: #eee; padding: 30px; display: flex; gap: 10px; align-items: center; }
+        input[type="email"] { flex: 1; padding: 12px; border: 1px solid #ccc; font-family: inherit; }
+        .btn-send { background: var(--point-color); color: #fff; border: none; padding: 12px 30px; cursor: pointer; font-family: inherit; }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
     <div id="step1" class="step-container active">
-        <div class="progress">01. TERRITORY</div>
-        <h2>당신의 일상을 깨우는 첫 번째 물결,<br>어떤 영역에서 시작하고 싶으신가요?</h2>
+        <div class="progress">Step 01. Territory</div>
+        <h2>일상을 깨우는 첫 번째 물결,<br>어떤 영역에서 시작하고 싶으신가요?</h2>
         <div class="card-grid">
-            <div class="choice-card" onclick="selectStep(1, 'Physical')"><span>신체·생존</span></div>
-            <div class="choice-card" onclick="selectStep(1, 'Relational')"><span>관계·공동체</span></div>
-            <div class="choice-card" onclick="selectStep(1, 'Experiential')"><span>탐험·경험</span></div>
-            <div class="choice-card" onclick="selectStep(1, 'Creative')"><span>창작·표현</span></div>
-            <div class="choice-card" onclick="selectStep(1, 'Intellectual')"><span>지적·학습</span></div>
-            <div class="choice-card" onclick="selectStep(1, 'Social')"><span>사회·공공</span></div>
-            <div class="choice-card" onclick="selectStep(1, 'Economic')"><span>자산·사업</span></div>
+            <div class="choice-card" onclick="selectStep(1, 'Physical')">신체·생존</div>
+            <div class="choice-card" onclick="selectStep(1, 'Relational')">관계·공동체</div>
+            <div class="choice-card" onclick="selectStep(1, 'Experiential')">탐험·경험</div>
+            <div class="choice-card" onclick="selectStep(1, 'Creative')">창작·표현</div>
+            <div class="choice-card" onclick="selectStep(1, 'Intellectual')">지적·학습</div>
+            <div class="choice-card" onclick="selectStep(1, 'Social')">사회·공공</div>
+            <div class="choice-card" onclick="selectStep(1, 'Economic')">자산·사업</div>
         </div>
     </div>
 
     <div id="step2" class="step-container">
-        <div class="progress">02. VALUE</div>
-        <h2>그 파동이 머물고 간 자리에,<br>어떤 가슴 벅찬 흔적을 남기고 싶으신가요?</h2>
+        <div class="progress">Step 02. Value</div>
+        <h2>그 파동이 머물고 간 자리에,<br>어떤 가슴 벅찬 흔적을 남기고 싶나요?</h2>
         <div class="card-grid">
-            <div class="choice-card" onclick="selectStep(2, 'Purpose')"><span>의미</span></div>
-            <div class="choice-card" onclick="selectStep(2, 'Legacy')"><span>유산</span></div>
-            <div class="choice-card" onclick="selectStep(2, 'Union')"><span>연결</span></div>
-            <div class="choice-card" onclick="selectStep(2, 'Goal')"><span>성취</span></div>
-            <div class="choice-card" onclick="selectStep(2, 'Autonomy')"><span>자율</span></div>
-            <div class="choice-card" onclick="selectStep(2, 'Growth')"><span>성장</span></div>
-            <div class="choice-card" onclick="selectStep(2, 'Energy')"><span>생동</span></div>
+            <div class="choice-card" onclick="selectStep(2, 'Purpose')">의미</div>
+            <div class="choice-card" onclick="selectStep(2, 'Legacy')">유산</div>
+            <div class="choice-card" onclick="selectStep(2, 'Union')">연결</div>
+            <div class="choice-card" onclick="selectStep(2, 'Goal')">성취</div>
+            <div class="choice-card" onclick="selectStep(2, 'Autonomy')">자율</div>
+            <div class="choice-card" onclick="selectStep(2, 'Growth')">성장</div>
+            <div class="choice-card" onclick="selectStep(2, 'Energy')">생동</div>
         </div>
     </div>
 
     <div id="step3" class="step-container">
-        <div class="progress">03. STYLE</div>
+        <div class="progress">Step 03. Style</div>
         <h2>당신은 그 파동을 어떤 방식으로 맞이하시겠습니까?</h2>
         <div class="dual-grid">
             <div class="style-card" onclick="selectStep(3, 'Light')">
-                <img src="https://cdn-icons-png.flaticon.com/512/2822/2822359.png" alt="Canoe">
-                <h3>잔잔한 물결 위 카누</h3>
-                <p>수면 위를 고요히 유영하듯,<br>평온한 몰입과 안식</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/2822/2822359.png" alt="Canoe"><br>
+                <strong>잔잔한 물결 위 카누</strong>
             </div>
             <div class="style-card" onclick="selectStep(3, 'Challenge')">
-                <img src="https://cdn-icons-png.flaticon.com/512/2664/2664531.png" alt="Surfing">
-                <h3>높은 파도 위 서핑</h3>
-                <p>거친 물결을 가로지르듯,<br>뜨거운 도전과 전율</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/2664/2664531.png" alt="Surfing"><br>
+                <strong>높은 파도 위 서핑</strong>
             </div>
         </div>
     </div>
 
-    <div id="result" class="step-container">
-        <div class="progress">FINAL REPORT</div>
-        <h2>당신만을 위해 큐레이션된<br>인생의 파동입니다.</h2>
-        <div class="result-box">
-            <span class="result-tag" id="resTag">CATEGORY | VALUE</span>
-            <div class="result-title" id="resTitle">버킷리스트 명칭</div>
-            <p id="resDesc" style="color:#666;">선택하신 파동을 기반으로 소노웨이브의 노하우가 담긴 리포트를 생성했습니다.</p>
-        </div>
+    <div id="resultArea" class="step-container">
+        <div class="progress">Your Wave Discovery</div>
+        <h2>당신만을 위해 발견된 파동입니다.</h2>
         
-        <div class="email-section">
-            <p class="sub-text">이 파동을 당신의 이메일로 간직하세요.</p>
-            <input type="email" id="userEmail" placeholder="이메일 주소를 입력해주세요">
-            <button class="btn-email" onclick="alert('리포트가 발송되었습니다.')">Email Me</button>
+        <div class="result-box">
+            <div class="edit-hint">✎ 클릭하여 문구를 수정할 수 있습니다</div>
+            <div id="resTitle" class="result-title" contenteditable="true">버킷리스트 명칭</div>
+            <button class="btn-add" onclick="addToCollection()">이 문장 담기 +</button>
         </div>
-        <p style="margin-top:30px;"><a href="#" onclick="location.reload()" style="color:var(--accent-color); text-decoration:none;">← 다시 찾아보기</a></p>
+
+        <div class="collection-area">
+            <h3>나의 마스터피스 컬렉션 (<span id="collCount">0</span>/10)</h3>
+            <ul id="collList" class="collection-list">
+                </ul>
+
+            <div id="emailSection" class="email-box" style="display:none;">
+                <input type="email" id="userEmail" placeholder="리포트를 받을 이메일 주소">
+                <button class="btn-send" onclick="sendFinalEmail()">Email Me</button>
+            </div>
+            
+            <p style="text-align:center; margin-top:40px;">
+                <a href="#" onclick="location.reload()" style="color:var(--accent-color); text-decoration:none;">← 다른 파동 찾아보기</a>
+            </p>
+        </div>
     </div>
 </div>
 
 <script>
-    // 98개 데이터 매트릭스 로직 (샘플 데이터 주입)
     const db = {
-    "Physical": {
-        "Purpose": { "Light": "손자녀와 함께하는 1박 2일 자연 액티비티", "Challenge": "소노 승마클럽 마스터 과정 완주" },
-        "Legacy": { "Light": "가족 건강 레시피북 완성", "Challenge": "가문 건강 비법 체계화 + 공식 기록 완성" },
-        "Union": { "Light": "부부 공동 건강 목표 설정 + 6개월 실천", "Challenge": "부부 함께 댄스스포츠 대회 입상" },
-        "Goal": { "Light": "10km 로드 마라톤 공식 완주", "Challenge": "철인 3종 경기 공식 완주" },
-        "Autonomy": { "Light": "나만의 아침 건강 루틴 90일 완성", "Challenge": "스쿠버다이빙 국제 자격증 취득 + 해외 다이빙" },
-        "Growth": { "Light": "코리아둘레길 코스 5개 이상 완주", "Challenge": "1년간 체계적 역노화 프로그램 완성" },
-        "Energy": { "Light": "생전 처음 해보는 액티비티 3가지 완수", "Challenge": "산악 자전거 (MTB) 대회 공식 완주" }
-    },
-    "Relational": {
-        "Purpose": { "Light": "소원했던 은인 10명 찾아가 감사 식사", "Challenge": "세계적 명사 교류 클럽 의장 활동" },
-        "Legacy": { "Light": "가계도·가족사 영상 다큐 완성 (셀프)", "Challenge": "가문 헌장 + 디지털 아카이브 구축" },
-        "Union": { "Light": "손자녀 관심사 함께 배우기 (3가지)", "Challenge": "3대 가족 공동 뮤지컬 무대 공연" },
-        "Goal": { "Light": "가족 공동 버킷리스트 달성 선포식 개최", "Challenge": "가업 승계 공식 선포식 완료" },
-        "Autonomy": { "Light": "나만의 테마 소셜 살롱 정기 운영 (6회)", "Challenge": "50주년 결혼기념 리마인드 웨딩 직접 기획" },
-        "Growth": { "Light": "부모님·자녀와 깊은 대화 시리즈 10회", "Challenge": "가족 모두 함께 골프 입문 + 공식 라운딩 완주" },
-        "Energy": { "Light": "친구들과 연 1회 테마 여행 전통 만들기", "Challenge": "50년 우정 친구들과 공동 회고록 출판" }
-    },
-    "Experiential": {
-        "Purpose": { "Light": "국내 역사 유적지 순례 10곳 완주", "Challenge": "민간 우주 비행 체험 완수" },
-        "Legacy": { "Light": "나만의 여행 에세이 자비 출판", "Challenge": "가문 대대로 이어갈 해외 성지 순례 개척" },
-        "Union": { "Light": "3대 가족 해외 여행 연례 전통 실행", "Challenge": "3대 가족 해외 오지 탐험 완주" },
-        "Goal": { "Light": "국내 섬 10곳 여행 완주", "Challenge": "국내/해외 트레일러닝 대회 공식 완주" },
-        "Autonomy": { "Light": "나홀로 제주도 한 달 살기 완료", "Challenge": "요트 세일링 자격증 취득 + 단독 항해" },
-        "Growth": { "Light": "영어·일어 등 제2외국어 중급 회화 마스터", "Challenge": "오토바이 세계 일주" },
-        "Energy": { "Light": "한 번도 안 가본 해외 도시 3곳 탐험", "Challenge": "히말라야 베이스캠프 트레킹 완주" }
-    },
-    "Creative": {
-        "Purpose": { "Light": "직접 만든 공예품으로 가족 선물 세트 완성", "Challenge": "나만의 요리 브랜드 + 요리책 출판" },
-        "Legacy": { "Light": "부부 여행기 독립 출판물 제작", "Challenge": "내 이름의 미술관 영구 컬렉션 기증 + 헌정" },
-        "Union": { "Light": "가족 모두가 참여하는 공동 포토북 제작", "Challenge": "가족 모두가 참여하는 가문 역사 다큐 제작" },
-        "Goal": { "Light": "원데이 아트클래스 수료 + 작품 전시", "Challenge": "개인 미술 작품 갤러리 전시회 개최" },
-        "Autonomy": { "Light": "나만의 플레이리스트 큐레이션 및 공유", "Challenge": "나만의 취향이 담긴 프라이빗 LP바/공간 구축" },
-        "Growth": { "Light": "악기 하나 마스터하여 지인 앞 연주", "Challenge": "전문 예술 교육 과정 수료 및 작가 데뷔" },
-        "Energy": { "Light": "매일 하나의 영감을 기록하는 드로잉 챌린지", "Challenge": "가문 로고 및 시그니처 문장(紋章) 디자인" }
-    },
-    "Intellectual": {
-        "Purpose": { "Light": "내 전문 분야 후배 멘토링 10회 완료", "Challenge": "AI·IT 기술 마스터 후 시니어 강사 활동" },
-        "Legacy": { "Light": "나의 인생 교훈 에세이 자비 출판", "Challenge": "나의 철학·인생을 담은 자서전 정식 출간" },
-        "Union": { "Light": "부부·가족 인문학 독서 모임 정기 운영", "Challenge": "인문학 크루 참여 + 공동 성과 발표회" },
-        "Goal": { "Light": "관심 분야 책 12권 완독 독서 챌린지", "Challenge": "전문 분야 석·박사 학위 취득" },
-        "Autonomy": { "Light": "매달 한 번 새로운 강연 참여 후 기록", "Challenge": "제2외국어로 현지 한 달 살기 (통번역기 없이)" },
-        "Growth": { "Light": "매일 뉴스레터 탐독 및 시사 브리핑 작성", "Challenge": "고급 인문학/철학 과정 1년 수료 및 논문 작성" },
-        "Energy": { "Light": "새로운 디지털 툴(앱) 10개 마스터하기", "Challenge": "글로벌 지식 컨퍼런스 참여 및 영문 참관기 발표" }
-    },
-    "Social": {
-        "Purpose": { "Light": "인문학 강연 기획 + 공개 강연 데뷔", "Challenge": "글로벌 평화·환경 민간 대사 활동" },
-        "Legacy": { "Light": "내 이름으로 지역 도서관 정기 도서 기증", "Challenge": "글로벌 '100개 학교' 건립 프로젝트" },
-        "Union": { "Light": "입주민과 함께하는 자선 바자회 기획", "Challenge": "지역 소외계층 자립 지원 연대 구성" },
-        "Goal": { "Light": "지역 자원봉사 연간 50시간 달성", "Challenge": "지역 사회 랜드마크 문화 공간 기부" },
-        "Autonomy": { "Light": "나만의 소규모 재능 나눔 클래스 운영", "Challenge": "사회 문제 해결을 위한 공익 재단 설립 운영" },
-        "Growth": { "Light": "비영리 단체 자문 위원 참여 및 활동", "Challenge": "사회적 기업 창업 및 비즈니스 모델 구축" },
-        "Energy": { "Light": "지역 캠페인 참여 및 SNS 홍보 대사 활동", "Challenge": "사회적 이슈 해결을 위한 포럼 개최 및 주도" }
-    },
-    "Economic": {
-        "Purpose": { "Light": "사회적 기업 소액 임팩트 투자 첫 경험", "Challenge": "가문 공익 재단 설립 완료" },
-        "Legacy": { "Light": "손자녀 미래를 위한 교육 신탁 펀드 설정", "Challenge": "100년 가업 승계 리더십 매뉴얼 완성" },
-        "Union": { "Light": "자녀와 가족 재정 대화 + 공동 소액 투자", "Challenge": "가족 공동 투자 펀드 운영 + 교육 시스템" },
-        "Goal": { "Light": "나만의 배당 포트폴리오 완성 (소액)", "Challenge": "임팩트 투자로 소셜 벤처 유니콘 육성" },
-        "Autonomy": { "Light": "금융 자격증/공부 후 직접 자산 운용", "Challenge": "단독 패밀리 오피스(SFO) 구축·운영" },
-        "Growth": { "Light": "경제 트렌드 공부 및 월간 자산 리포트 작성", "Challenge": "엔젤 투자자 활동 및 스타트업 멘토링" },
-        "Energy": { "Light": "부동산/주식 외 새로운 투자 자산 탐색", "Challenge": "가족 법인 설립을 통한 자산 구조 효율화" }
-    }
-};
-    
-    let selections = { domain: '', value: '', style: '' };
+        "Physical": {
+            "Purpose": { "Light": "손자녀와 함께하는 1박 2일 자연 액티비티", "Challenge": "소노 승마클럽 마스터 과정 완주" },
+            "Legacy": { "Light": "가족 건강 레시피북 완성", "Challenge": "가문 건강 비법 체계화 + 공식 기록 완성" },
+            "Union": { "Light": "부부 공동 건강 목표 설정 + 6개월 실천", "Challenge": "부부 함께 댄스스포츠 대회 입상" },
+            "Goal": { "Light": "10km 로드 마라톤 공식 완주", "Challenge": "철인 3종 경기 공식 완주" },
+            "Autonomy": { "Light": "나만의 아침 건강 루틴 90일 완성", "Challenge": "스쿠버다이빙 국제 자격증 취득 + 해외 다이빙" },
+            "Growth": { "Light": "코리아둘레길 코스 5개 이상 완주", "Challenge": "1년간 체계적 역노화 프로그램 완성" },
+            "Energy": { "Light": "생전 처음 해보는 액티비티 3가지 완수", "Challenge": "산악 자전거 (MTB) 대회 공식 완주" }
+        },
+        "Relational": {
+            "Purpose": { "Light": "은인 10명 찾아가 감사 식사", "Challenge": "세계적 명사 교류 클럽 의장 활동" },
+            "Legacy": { "Light": "가족사 영상 다큐 완성", "Challenge": "가문 헌장 + 디지털 아카이브 구축" },
+            "Union": { "Light": "손자녀 관심사 함께 배우기", "Challenge": "3대 가족 공동 뮤지컬 무대 공연" },
+            "Goal": { "Light": "가족 버킷리스트 달성 선포식", "Challenge": "가업 승계 공식 선포식 완료" },
+            "Autonomy": { "Light": "나만의 테마 소셜 살롱 운영", "Challenge": "50주년 리마인드 웨딩 직접 기획" },
+            "Growth": { "Light": "부모님·자녀와 깊은 대화 시리즈", "Challenge": "가족 함께 골프 입문 + 라운딩 완주" },
+            "Energy": { "Light": "친구들과 연 1회 테마 여행", "Challenge": "50년 우정 친구들과 공동 회고록 출판" }
+        },
+        "Experiential": {
+            "Purpose": { "Light": "국내 역사 유적지 10곳 완주", "Challenge": "민간 우주 비행 체험 완수" },
+            "Legacy": { "Light": "나만의 여행 에세이 자비 출판", "Challenge": "가문 대대로 이어갈 해외 성지 순례" },
+            "Union": { "Light": "3대 가족 해외 여행 연례 전통", "Challenge": "3대 가족 해외 오지 탐험 완주" },
+            "Goal": { "Light": "국내 섬 10곳 여행 완주", "Challenge": "국내/해외 트레일러닝 대회 완주" },
+            "Autonomy": { "Light": "나홀로 제주도 한 달 살기", "Challenge": "요트 세일링 자격증 취득 + 단독 항해" },
+            "Growth": { "Light": "제2외국어 중급 회화 마스터", "Challenge": "오토바이 세계 일주" },
+            "Energy": { "Light": "해외 도시 3곳 탐험", "Challenge": "히말라야 베이스캠프 트레킹 완주" }
+        },
+        "Creative": {
+            "Purpose": { "Light": "가족 요리책 출판", "Challenge": "나만의 요리 브랜드 구축" },
+            "Legacy": { "Light": "부부 여행기 독립 출판물 제작", "Challenge": "내 이름의 미술관 컬렉션 기증" },
+            "Union": { "Light": "공동 포토북 제작", "Challenge": "가문 역사 다큐 제작" },
+            "Goal": { "Light": "원데이 아트클래스 수료", "Challenge": "개인 미술 작품 전시회 개최" },
+            "Autonomy": { "Light": "나만의 플레이리스트 공유", "Challenge": "프라이빗 LP바 공간 구축" },
+            "Growth": { "Light": "악기 마스터하여 연주회", "Challenge": "전문 작가 데뷔" },
+            "Energy": { "Light": "매일 드로잉 챌린지", "Challenge": "가문 로고 문장 디자인" }
+        },
+        "Intellectual": {
+            "Purpose": { "Light": "후배 멘토링 10회", "Challenge": "AI 마스터 후 시니어 강사 활동" },
+            "Legacy": { "Light": "인생 교훈 에세이 출판", "Challenge": "자서전 정식 출간" },
+            "Union": { "Light": "가족 독서 모임 운영", "Challenge": "인문학 크루 공동 발표회" },
+            "Goal": { "Light": "책 12권 완독 챌린지", "Challenge": "전문 분야 석·박사 학위 취득" },
+            "Autonomy": { "Light": "매달 강연 참여 후 기록", "Challenge": "제2외국어로 현지 한 달 살기" },
+            "Growth": { "Light": "뉴스레터 시사 브리핑 작성", "Challenge": "고급 인문학 과정 수료 및 논문 작성" },
+            "Energy": { "Light": "디지털 툴 10개 마스터", "Challenge": "글로벌 지식 컨퍼런스 참관기 발표" }
+        },
+        "Social": {
+            "Purpose": { "Light": "인문학 강연 기획 및 데뷔", "Challenge": "글로벌 평화·환경 민간 대사" },
+            "Legacy": { "Light": "지역 도서관 도서 기증", "Challenge": "글로벌 100개 학교 건립" },
+            "Union": { "Light": "입주민 자선 바자회 기획", "Challenge": "지역 소외계층 자립 지원" },
+            "Goal": { "Light": "자원봉사 연간 50시간", "Challenge": "지역 랜드마크 문화 공간 기부" },
+            "Autonomy": { "Light": "재능 나눔 클래스 운영", "Challenge": "사회적 공익 재단 설립 운영" },
+            "Growth": { "Light": "비영리 단체 자문 참여", "Challenge": "사회적 기업 창업" },
+            "Energy": { "Light": "지역 캠페인 홍보 대사", "Challenge": "사회 이슈 포럼 개최" }
+        },
+        "Economic": {
+            "Purpose": { "Light": "임팩트 투자 첫 경험", "Challenge": "가문 공익 재단 설립" },
+            "Legacy": { "Light": "손자녀 교육 신탁 설정", "Challenge": "100년 가업 승계 매뉴얼 완성" },
+            "Union": { "Light": "가족 재정 대화 및 투자", "Challenge": "가족 공동 투자 교육 시스템" },
+            "Goal": { "Light": "배당 포트폴리오 완성", "Challenge": "임팩트 투자로 벤처 육성" },
+            "Autonomy": { "Light": "금융 자산 직접 운용", "Challenge": "패밀리 오피스 구축" },
+            "Growth": { "Light": "경제 트렌드 리포트 작성", "Challenge": "엔젤 투자자 활동 및 멘토링" },
+            "Energy": { "Light": "새로운 투자 자산 탐색", "Challenge": "가족 법인 설립 및 효율화" }
+        }
+    };
 
-    function selectStep(step, value) {
-        if (step === 1) selections.domain = value;
-        if (step === 2) selections.value = value;
+    let selections = { domain: '', value: '', style: '' };
+    let collectedItems = [];
+
+    function selectStep(step, val) {
+        if (step === 1) selections.domain = val;
+        if (step === 2) selections.value = val;
         if (step === 3) {
-            selections.style = value;
-            showResult();
+            selections.style = val;
+            showDiscovery();
             return;
         }
-
         document.getElementById(`step${step}`).classList.remove('active');
         setTimeout(() => {
             document.getElementById(`step${step}`).style.display = 'none';
-            const nextStep = document.getElementById(`step${step + 1}`);
-            nextStep.style.display = 'block';
-            setTimeout(() => nextStep.classList.add('active'), 50);
-        }, 500);
+            const next = document.getElementById(`step${step+1}`);
+            next.style.display = 'block';
+            setTimeout(() => next.classList.add('active'), 50);
+        }, 400);
     }
 
-    function showResult() {
+    function showDiscovery() {
+        const title = db[selections.domain][selections.value][selections.style];
+        document.getElementById('resTitle').innerText = title;
         document.getElementById('step3').classList.remove('active');
-        
-        // 데이터 추출 로직
-        let resultTitle = "당신만의 특별한 파동을 준비 중입니다.";
-        try {
-            resultTitle = db[selections.domain][selections.value][selections.style];
-        } catch(e) {
-            resultTitle = `${selections.domain} 영역의 ${selections.value}을(를) 위한 ${selections.style} 활동`;
-        }
-
-        document.getElementById('resTag').innerText = `${selections.domain} / ${selections.value} / ${selections.style}`;
-        document.getElementById('resTitle').innerText = resultTitle;
-
         setTimeout(() => {
             document.getElementById('step3').style.display = 'none';
-            const resPage = document.getElementById('result');
-            resPage.style.display = 'block';
-            setTimeout(() => resPage.classList.add('active'), 50);
-        }, 500);
+            const area = document.getElementById('resultArea');
+            area.style.display = 'block';
+            setTimeout(() => area.classList.add('active'), 50);
+        }, 400);
+    }
+
+    function addToCollection() {
+        const text = document.getElementById('resTitle').innerText.trim();
+        if (collectedItems.length >= 10) {
+            alert("컬렉션은 최대 10개까지 가능합니다.");
+            return;
+        }
+        if (collectedItems.includes(text)) {
+            alert("이미 컬렉션에 담긴 문장입니다.");
+            return;
+        }
+        collectedItems.push(text);
+        renderCollection();
+    }
+
+    function renderCollection() {
+        const list = document.getElementById('collList');
+        const count = document.getElementById('collCount');
+        const emailSec = document.getElementById('emailSection');
+        
+        list.innerHTML = '';
+        collectedItems.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.className = 'collection-item';
+            li.innerHTML = `<span>${index + 1}. ${item}</span> <button class="btn-remove" onclick="removeItem(${index})">삭제</button>`;
+            list.appendChild(li);
+        });
+
+        count.innerText = collectedItems.length;
+        emailSec.style.display = collectedItems.length > 0 ? 'flex' : 'none';
+    }
+
+    function removeItem(index) {
+        collectedItems.splice(index, 1);
+        renderCollection();
+    }
+
+    function sendFinalEmail() {
+        const email = document.getElementById('userEmail').value;
+        if (!email) { alert("이메일을 입력해주세요."); return; }
+        
+        const content = collectedItems.join('\n');
+        alert(`${email}님께 아래 10개의 파동 리포트가 발송되었습니다.\n\n[나의 컬렉션]\n${content}`);
+        // 실제 전송 로직(Formspree 등)은 여기에 연결
     }
 </script>
 </body>
 </html>
-
