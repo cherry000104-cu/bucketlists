@@ -4,231 +4,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SONO WAVE | Life in Wave</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f8f7f4; /* 양장본 종이 질감 색상 */
-            --point-color: #1a2a40; /* 소노웨이브 딥 네이비 */
-            --accent-color: #c5a36b; /* 샴페인 골드 */
+            --bg-color: #f8f7f4; 
+            --point-color: #1a2a40; 
+            --accent-color: #c5a36b;
             --text-color: #333;
         }
 
         body {
-            margin: 0;
-            background-color: var(--bg-color);
-            font-family: 'Noto Serif KR', serif;
-            color: var(--text-color);
-            overflow-x: hidden;
+            margin: 0; background-color: var(--bg-color);
+            font-family: 'Noto Serif KR', serif; color: var(--text-color);
+            line-height: 1.6; overflow-x: hidden;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 80px 20px;
-            text-align: center;
-        }
+        /* 디지털 양장본 느낌의 여백과 애니메이션 */
+        .wrapper { max-width: 800px; margin: 0 auto; padding: 100px 20px; min-height: 80vh; }
+        .step-container { display: none; opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .step-container.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* 헤더 문구 */
-        .prologue-text {
-            font-size: 1.5rem;
-            line-height: 1.8;
-            margin-bottom: 60px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease;
-        }
+        h2 { font-size: 2rem; font-weight: 500; margin-bottom: 40px; color: var(--point-color); word-break: keep-all; }
+        .sub-text { font-size: 1.1rem; color: #777; margin-bottom: 50px; }
 
-        .prologue-text.show {
-            opacity: 1;
-            transform: translateY(0);
+        /* 카드 레이아웃 */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .choice-card {
+            background: #fff; border: 1px solid #e0e0e0; padding: 30px 15px; cursor: pointer;
+            transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+        .choice-card:hover { border-color: var(--accent-color); background: #fdfaf5; }
+        .choice-card i { font-size: 1.5rem; margin-bottom: 15px; display: block; }
+        .choice-card span { font-weight: 500; }
 
-        /* 98 컬렉션 아이템 스타일 */
-        .wave-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
+        /* 단계 3 특화 레이아웃 (2개 카드) */
+        .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .style-card {
+            background: #fff; border: 1px solid #e0e0e0; padding: 50px 20px; cursor: pointer; transition: all 0.3s;
         }
+        .style-card img { width: 100px; margin-bottom: 20px; opacity: 0.7; }
+        .style-card:hover { border-color: var(--accent-color); }
+        .style-card h3 { margin: 10px 0; font-size: 1.3rem; }
 
-        .wave-item {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative;
-            overflow: hidden;
+        /* 결과 화면 */
+        .result-box { background: #fff; border: 1px solid var(--accent-color); padding: 60px 40px; margin-top: 30px; }
+        .result-tag { color: var(--accent-color); font-size: 0.9rem; margin-bottom: 10px; display: block; }
+        .result-title { font-size: 1.8rem; margin-bottom: 20px; color: var(--point-color); }
+        
+        /* Email Me 섹션 */
+        .email-section { margin-top: 50px; border-top: 1px solid #eee; padding-top: 40px; }
+        input[type="email"] { 
+            padding: 15px; width: 60%; border: 1px solid #ddd; font-family: inherit; margin-right: 10px;
         }
+        .btn-email { 
+            background: var(--point-color); color: #fff; border: none; padding: 15px 40px; 
+            cursor: pointer; font-family: inherit; transition: 0.3s;
+        }
+        .btn-email:hover { background: var(--accent-color); }
 
-        .wave-item:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .wave-item.selected {
-            background-color: var(--point-color);
-            color: #fff;
-            border-color: var(--point-color);
-        }
-
-        /* 하단 플로팅 바 (Your Waves) */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #fff;
-            border-top: 1px solid #ddd;
-            padding: 20px 0;
-            transform: translateY(100%);
-            transition: transform 0.5s ease;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
-            z-index: 100;
-        }
-
-        .bottom-bar.active {
-            transform: translateY(0);
-        }
-
-        .flex-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        input[type="email"] {
-            padding: 12px 20px;
-            width: 250px;
-            border: 1px solid #ddd;
-            font-family: inherit;
-        }
-
-        .btn-email {
-            background: var(--accent-color);
-            color: #fff;
-            border: none;
-            padding: 12px 30px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.3s;
-        }
-
-        .btn-email:hover {
-            background: #b08e5a;
-        }
-
-        /* 파동 애니메이션 효과 */
-        .wave-effect {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: rgba(197, 163, 107, 0.3);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: wave-anim 0.6s ease-out;
-        }
-
-        @keyframes wave-anim {
-            to { transform: scale(30); opacity: 0; }
-        }
+        .progress { font-size: 0.9rem; color: var(--accent-color); letter-spacing: 2px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="intro" class="prologue-text">
-        당신의 가슴 속 파도는 무엇인가요?<br>
-        <span style="font-size: 1.1rem; color: #777;">소노가 엄선한 98가지 시그니처 중 당신의 물결을 골라보세요.</span>
+<div class="wrapper">
+    <div id="step1" class="step-container active">
+        <div class="progress">01. TERRITORY</div>
+        <h2>당신의 일상을 깨우는 첫 번째 물결,<br>어떤 영역에서 시작하고 싶으신가요?</h2>
+        <div class="card-grid">
+            <div class="choice-card" onclick="selectStep(1, 'Physical')"><span>신체·생존</span></div>
+            <div class="choice-card" onclick="selectStep(1, 'Relational')"><span>관계·공동체</span></div>
+            <div class="choice-card" onclick="selectStep(1, 'Experiential')"><span>탐험·경험</span></div>
+            <div class="choice-card" onclick="selectStep(1, 'Creative')"><span>창작·표현</span></div>
+            <div class="choice-card" onclick="selectStep(1, 'Intellectual')"><span>지적·학습</span></div>
+            <div class="choice-card" onclick="selectStep(1, 'Social')"><span>사회·공공</span></div>
+            <div class="choice-card" onclick="selectStep(1, 'Economic')"><span>자산·사업</span></div>
+        </div>
     </div>
 
-    <div class="wave-grid" id="grid">
+    <div id="step2" class="step-container">
+        <div class="progress">02. VALUE</div>
+        <h2>그 파동이 머물고 간 자리에,<br>어떤 가슴 벅찬 흔적을 남기고 싶으신가요?</h2>
+        <div class="card-grid">
+            <div class="choice-card" onclick="selectStep(2, 'Purpose')"><span>의미</span></div>
+            <div class="choice-card" onclick="selectStep(2, 'Legacy')"><span>유산</span></div>
+            <div class="choice-card" onclick="selectStep(2, 'Union')"><span>연결</span></div>
+            <div class="choice-card" onclick="selectStep(2, 'Goal')"><span>성취</span></div>
+            <div class="choice-card" onclick="selectStep(2, 'Autonomy')"><span>자율</span></div>
+            <div class="choice-card" onclick="selectStep(2, 'Growth')"><span>성장</span></div>
+            <div class="choice-card" onclick="selectStep(2, 'Energy')"><span>생동</span></div>
         </div>
-</div>
+    </div>
 
-<div class="bottom-bar" id="bottomBar">
-    <div class="flex-row">
-        <div id="counter">선택된 파동: 0개</div>
-        <div>
-            <input type="email" id="userEmail" placeholder="리포트를 받을 이메일 주소">
-            <button class="btn-email" onclick="sendEmail()">Email Me</button>
+    <div id="step3" class="step-container">
+        <div class="progress">03. STYLE</div>
+        <h2>당신은 그 파동을 어떤 방식으로 맞이하시겠습니까?</h2>
+        <div class="dual-grid">
+            <div class="style-card" onclick="selectStep(3, 'Light')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2822/2822359.png" alt="Canoe">
+                <h3>잔잔한 물결 위 카누</h3>
+                <p>수면 위를 고요히 유영하듯,<br>평온한 몰입과 안식</p>
+            </div>
+            <div class="style-card" onclick="selectStep(3, 'Challenge')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2664/2664531.png" alt="Surfing">
+                <h3>높은 파도 위 서핑</h3>
+                <p>거친 물결을 가로지르듯,<br>뜨거운 도전과 전율</p>
+            </div>
         </div>
+    </div>
+
+    <div id="result" class="step-container">
+        <div class="progress">FINAL REPORT</div>
+        <h2>당신만을 위해 큐레이션된<br>인생의 파동입니다.</h2>
+        <div class="result-box">
+            <span class="result-tag" id="resTag">CATEGORY | VALUE</span>
+            <div class="result-title" id="resTitle">버킷리스트 명칭</div>
+            <p id="resDesc" style="color:#666;">선택하신 파동을 기반으로 소노웨이브의 노하우가 담긴 리포트를 생성했습니다.</p>
+        </div>
+        
+        <div class="email-section">
+            <p class="sub-text">이 파동을 당신의 이메일로 간직하세요.</p>
+            <input type="email" id="userEmail" placeholder="이메일 주소를 입력해주세요">
+            <button class="btn-email" onclick="alert('리포트가 발송되었습니다.')">Email Me</button>
+        </div>
+        <p style="margin-top:30px;"><a href="#" onclick="location.reload()" style="color:var(--accent-color); text-decoration:none;">← 다시 찾아보기</a></p>
     </div>
 </div>
 
 <script>
-    // 98가지 리스트 중 대표 샘플 데이터 (CSV 기반)
-    const collection = [
-        { id: 1, title: "철인 3종 경기 공식 완주", type: "Challenge" },
-        { id: 2, title: "가문 헌장 & 디지털 아카이브 구축", type: "Legacy" },
-        { id: 3, title: "민간 우주 비행 체험", type: "Experience" },
-        { id: 4, title: "개인 미술 작품 갤러리 전시", type: "Creative" },
-        { id: 5, title: "손자녀와 함께하는 자연 액티비티", type: "Life" },
-        { id: 6, title: "전문 분야 석·박사 학위 취득", type: "Growth" }
-    ];
-
-    const selectedItems = new Set();
-    const grid = document.getElementById('grid');
-    const bottomBar = document.getElementById('bottomBar');
-    const counter = document.getElementById('counter');
-
-    // 초기 화면 애니메이션
-    window.onload = () => {
-        document.getElementById('intro').classList.add('show');
-        renderGrid();
+    // 98개 데이터 매트릭스 로직 (샘플 데이터 주입)
+    const db = {
+        "Physical": {
+            "Purpose": { "Light": "손자녀와 함께하는 1박 2일 자연 액티비티", "Challenge": "소노 승마클럽 마스터 과정 완주" },
+            "Energy": { "Light": "생전 처음 해보는 액티비티 3가지 완수", "Challenge": "산악 자전거(MTB) 대회 공식 완주" },
+            "Goal": { "Light": "10km 로드 마라톤 공식 완주", "Challenge": "철인 3종 경기 공식 완주" }
+            // ... (나머지 98개 데이터를 이 형식으로 채우면 됩니다)
+        },
+        "Intellectual": {
+            "Legacy": { "Light": "나의 인생 교훈 에세이 자비 출판", "Challenge": "나의 철학을 담은 자서전 정식 출간" },
+            "Goal": { "Light": "관심 분야 책 12권 완독 독서 챌린지", "Challenge": "전문 분야 석·박사 학위 취득" }
+        }
+        // 이 데이터 구조에 98개를 다 꽂으면 100% 작동합니다.
     };
 
-    function renderGrid() {
-        collection.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'wave-item';
-            div.innerHTML = `<small>${item.type}</small><br><strong>${item.title}</strong>`;
-            div.onclick = (e) => toggleSelect(div, item, e);
-            grid.appendChild(div);
-        });
-    }
+    let selections = { domain: '', value: '', style: '' };
 
-    function toggleSelect(element, item, event) {
-        // 파동 효과 생성
-        const wave = document.createElement('div');
-        wave.className = 'wave-effect';
-        wave.style.left = event.offsetX + 'px';
-        wave.style.top = event.offsetY + 'px';
-        element.appendChild(wave);
-        setTimeout(() => wave.remove(), 600);
-
-        if (selectedItems.has(item.title)) {
-            selectedItems.delete(item.title);
-            element.classList.remove('selected');
-        } else {
-            selectedItems.add(item.title);
-            element.classList.add('selected');
+    function selectStep(step, value) {
+        if (step === 1) selections.domain = value;
+        if (step === 2) selections.value = value;
+        if (step === 3) {
+            selections.style = value;
+            showResult();
+            return;
         }
 
-        updateUI();
+        document.getElementById(`step${step}`).classList.remove('active');
+        setTimeout(() => {
+            document.getElementById(`step${step}`).style.display = 'none';
+            const nextStep = document.getElementById(`step${step + 1}`);
+            nextStep.style.display = 'block';
+            setTimeout(() => nextStep.classList.add('active'), 50);
+        }, 500);
     }
 
-    function updateUI() {
-        counter.innerText = `선택된 파동: ${selectedItems.size}개`;
-        if (selectedItems.size > 0) {
-            bottomBar.classList.add('active');
-        } else {
-            bottomBar.classList.remove('active');
-        }
-    }
-
-    function sendEmail() {
-        const email = document.getElementById('userEmail').value;
-        if (!email) { alert("이메일을 입력해주세요."); return; }
+    function showResult() {
+        document.getElementById('step3').classList.remove('active');
         
-        const list = Array.from(selectedItems).join(', ');
-        alert(`${email}님께 당신의 파동 리포트가 발송되었습니다!\n선택 항목: ${list}`);
-        // 실제 운영 시에는 여기서 구글 시트나 이메일 API로 데이터를 전송합니다.
+        // 데이터 추출 로직
+        let resultTitle = "당신만의 특별한 파동을 준비 중입니다.";
+        try {
+            resultTitle = db[selections.domain][selections.value][selections.style];
+        } catch(e) {
+            resultTitle = `${selections.domain} 영역의 ${selections.value}을(를) 위한 ${selections.style} 활동`;
+        }
+
+        document.getElementById('resTag').innerText = `${selections.domain} / ${selections.value} / ${selections.style}`;
+        document.getElementById('resTitle').innerText = resultTitle;
+
+        setTimeout(() => {
+            document.getElementById('step3').style.display = 'none';
+            const resPage = document.getElementById('result');
+            resPage.style.display = 'block';
+            setTimeout(() => resPage.classList.add('active'), 50);
+        }, 500);
     }
 </script>
-
 </body>
 </html>
+
