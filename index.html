@@ -245,4 +245,98 @@
             "Legacy": { "Light": "손자녀 교육 신탁 설정", "Challenge": "100년 가업 승계 매뉴얼 완성" },
             "Union": { "Light": "가족 재정 대화 및 투자", "Challenge": "가족 공동 투자 교육 시스템" },
             "Goal": { "Light": "배당 포트폴리오 완성", "Challenge": "임팩트 투자로 벤처 육성" },
-            "Autonomy": { "Light": "금융 자산 직접 운용", "Challenge": "패밀리 오
+            "Autonomy": { "Light": "금융 자산 직접 운용", "Challenge": "패밀리 오피스 구축" },
+            "Growth": { "Light": "경제 트렌드 리포트 작성", "Challenge": "엔젤 투자자 활동 및 멘토링" },
+            "Energy": { "Light": "새로운 투자 자산 탐색", "Challenge": "가족 법인 설립 및 효율화" }
+        }
+    };
+
+    let selections = { domain: '', value: '', style: '' };
+    let collectedItems = [];
+
+    function selectStep(step, val, el) {
+        const parent = el.parentElement;
+        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+        el.classList.add('selected');
+
+        if (step === 1) {
+            selections.domain = val;
+            showSection('step2');
+        } else if (step === 2) {
+            selections.value = val;
+            showSection('step3');
+        } else if (step === 3) {
+            selections.style = val;
+            showDiscovery();
+        }
+    }
+
+    function showSection(id) {
+        const sec = document.getElementById(id);
+        sec.style.display = 'block';
+        setTimeout(() => {
+            sec.classList.add('active');
+            sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    function showDiscovery() {
+        const title = db[selections.domain][selections.value][selections.style];
+        document.getElementById('resTitle').innerText = title;
+        showSection('resultArea');
+    }
+
+    function addToCollection() {
+        const text = document.getElementById('resTitle').innerText.trim();
+        if (collectedItems.length >= 10) { alert("컬렉션은 최대 10개까지 가능합니다."); return; }
+        if (collectedItems.includes(text)) { alert("이미 컬렉션에 담긴 문장입니다."); return; }
+        
+        collectedItems.push(text);
+        renderCollection();
+        document.getElementById('finalCollection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderCollection() {
+        const list = document.getElementById('collList');
+        const count = document.getElementById('collCount');
+        const emailSec = document.getElementById('emailSection');
+        
+        if (collectedItems.length === 0) {
+            list.innerHTML = '<p style="color:#aaa; font-style:italic; padding:40px 0;">탐색을 통해 당신의 인생 컬렉션을 채워보세요.</p>';
+        } else {
+            list.innerHTML = '';
+            collectedItems.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'collection-item';
+                li.innerHTML = `<span><strong>${index + 1}.</strong> ${item}</span> <button class="btn-remove" onclick="removeItem(${index})">삭제</button>`;
+                list.appendChild(li);
+            });
+        }
+        count.innerText = collectedItems.length;
+        emailSec.style.display = collectedItems.length > 0 ? 'flex' : 'none';
+    }
+
+    function removeItem(index) {
+        collectedItems.splice(index, 1);
+        renderCollection();
+    }
+
+    function restartDiscovery() {
+        selections = { domain: '', value: '', style: '' };
+        ['step2', 'step3', 'resultArea'].forEach(id => {
+            const sec = document.getElementById(id);
+            sec.classList.remove('active');
+            sec.style.display = 'none';
+        });
+        document.querySelectorAll('.choice-card, .style-card').forEach(c => c.classList.remove('selected'));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function sendFinalEmail() {
+        const email = document.getElementById('userEmail').value;
+        if (!email) { alert("이메일을 입력해주세요."); return; }
+        alert(`${email}님께 당신의 마스터피스 컬렉션 리포트가 발송되었습니다.`);
+    }
+</script>
+</body>
+</html>
